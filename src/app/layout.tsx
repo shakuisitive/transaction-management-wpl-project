@@ -3,7 +3,12 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { ChartColumnBigIcon } from "lucide-react";
-
+import {
+  ClerkProvider,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+} from "@clerk/nextjs";
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
@@ -21,20 +26,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
-        <nav className="bg-primary p-4 text-white h-20 flex items-center justify-between">
-          <Link
-            className="font-bold text-2xl flex gap-1 items-center"
-            href="/dashboard"
-          >
-            <ChartColumnBigIcon className="text-lime-500" />
-            NextCash
-          </Link>
-          <div>auth</div>
-        </nav>
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${poppins.variable} antialiased`}>
+          <nav className="bg-primary p-4 text-white h-20 flex items-center justify-between">
+            <Link
+              className="font-bold text-2xl flex gap-1 items-center"
+              href="/dashboard"
+            >
+              <ChartColumnBigIcon className="text-lime-500" />
+              NextCash
+            </Link>
+            <div>
+              <SignedOut>
+                <div className="flex items-center gap-4">
+                  <SignInButton className="hover:cursor-pointer" />
+                  <SignUpButton className="hover:cursor-pointer" />
+                </div>
+              </SignedOut>
+            </div>
+          </nav>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
