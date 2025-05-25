@@ -8,8 +8,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCategories } from "@/data/getCategories";
 import Link from "next/link";
-const NewTransactionPage = () => {
+const NewTransactionPage = async () => {
+  let categories = await getCategories();
   return (
     <div className="max-w-screen-xl mx-auto py-10">
       <Breadcrumb>
@@ -39,7 +41,7 @@ const NewTransactionPage = () => {
           <CardTitle>New Transaction</CardTitle>
         </CardHeader>
         <CardContent>
-          <TransactionForm />
+          <TransactionForm categories={categories} />
         </CardContent>
       </Card>
     </div>

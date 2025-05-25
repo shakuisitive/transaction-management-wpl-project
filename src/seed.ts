@@ -53,7 +53,6 @@ let categoriesSeedData: (typeof categoriesTable.$inferInsert)[] = [
 ];
 
 async function main() {
-  console.log("hello");
   await db.insert(categoriesTable).values(categoriesSeedData);
 }
 
