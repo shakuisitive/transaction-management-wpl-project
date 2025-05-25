@@ -6,9 +6,13 @@ import { ChartColumnBigIcon } from "lucide-react";
 import {
   ClerkProvider,
   SignedOut,
+  SignedIn,
   SignInButton,
   SignUpButton,
 } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import UserDropDown from "@/components/common/user-dropdown";
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
@@ -39,11 +43,28 @@ export default function RootLayout({
             </Link>
             <div>
               <SignedOut>
-                <div className="flex items-center gap-4">
-                  <SignInButton className="hover:cursor-pointer" />
-                  <SignUpButton className="hover:cursor-pointer" />
+                <div className="flex items-center">
+                  <Button
+                    asChild
+                    variant="link"
+                    className="text-white hover:cursor-pointer"
+                  >
+                    <SignInButton />
+                  </Button>
+
+                  <Button
+                    asChild
+                    variant="link"
+                    className="text-white hover:cursor-pointer"
+                  >
+                    <SignUpButton />
+                  </Button>
                 </div>
               </SignedOut>
+
+              <SignedIn>
+                <UserDropDown />
+              </SignedIn>
             </div>
           </nav>
           {children}
