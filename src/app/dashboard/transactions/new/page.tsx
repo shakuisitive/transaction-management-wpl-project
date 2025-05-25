@@ -1,3 +1,4 @@
+import TransactionForm from "@/components/common/transaction-form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,7 +9,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-
 const NewTransactionPage = () => {
   return (
     <div className="max-w-screen-xl mx-auto py-10">
@@ -38,7 +38,9 @@ const NewTransactionPage = () => {
         <CardHeader>
           <CardTitle>New Transaction</CardTitle>
         </CardHeader>
-        <CardContent>new transaction form</CardContent>
+        <CardContent>
+          <TransactionForm />
+        </CardContent>
       </Card>
     </div>
   );
