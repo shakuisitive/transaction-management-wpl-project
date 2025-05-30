@@ -10,6 +10,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCategories } from "@/data/getCategories";
 import Link from "next/link";
+import NewTransactionForm from './new-transaction-form'
+
 const NewTransactionPage = async () => {
   let categories = await getCategories();
   return (
@@ -41,7 +43,8 @@ const NewTransactionPage = async () => {
           <CardTitle>New Transaction</CardTitle>
         </CardHeader>
         <CardContent>
-          <TransactionForm categories={categories} />
+
+          <NewTransactionForm categories={categories} />
         </CardContent>
       </Card>
     </div>
