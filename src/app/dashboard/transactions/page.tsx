@@ -8,10 +8,11 @@ import {
   } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTransactionsByMonth } from "@/data/getTransactionsByMonth";
 import { format } from "date-fns";
 import Link from "next/link";
-import {z} from 'zod';
 
+import {z} from 'zod';
 let today = new Date();
 
 let searchSchema = z.object({
@@ -30,6 +31,10 @@ async function TransactionsPage({searchParams}: {
   let {year, month} = searchSchema.parse(searchParamsValues);
 
   let selectedDate = new Date(year, month - 1, 1);
+
+  let transactions = await getTransactionsByMonth({month, year});
+
+  console.log(transactions)
 
   return (
     <div className="max-w-screen-xl mx-auto py-10">
