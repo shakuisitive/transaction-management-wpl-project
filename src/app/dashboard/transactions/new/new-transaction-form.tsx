@@ -51,7 +51,7 @@ export default function NewTransactionForm({
       },
     });
 
-    router.push("/dashboard/transactions");
+    router.push(`/dashboard/transactions/?month=${data.transactionDate.getMonth() + 1}&year=${data.transactionDate.getFullYear()}`);
   };
 
   return <TransactionForm onSubmit={handleSubmit} categories={categories} />;
