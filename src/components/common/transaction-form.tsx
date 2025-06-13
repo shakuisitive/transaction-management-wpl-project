@@ -112,7 +112,13 @@ const TransactionForm = ({ categories, onSubmit, defaultValues, submitButtonLabe
                     value={field.value.toString()}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder="Select a category">
+                        {field.value ? (
+                          filteredCategories.find(cat => cat.id === field.value)?.name
+                        ) : (
+                          "Select a category"
+                        )}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {filteredCategories.map((category) => (
@@ -120,7 +126,14 @@ const TransactionForm = ({ categories, onSubmit, defaultValues, submitButtonLabe
                           key={category.id}
                           value={category.id.toString()}
                         >
-                          {category.name}
+                          <div className="flex flex-col">
+                            <span>{category.name}</span>
+                            {category.description && (
+                              <span className="text-muted-foreground text-xs">
+                                {category.description}
+                              </span>
+                            )}
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
