@@ -37,7 +37,7 @@ export default function RootLayout({
           <nav className="bg-primary p-4 text-white h-20 flex items-center justify-between">
             <Link
               className="font-bold text-2xl flex gap-1 items-center"
-              href="/dashboard"
+              href="/"
             >
               <ChartColumnBigIcon className="text-lime-500" />
               NextCash

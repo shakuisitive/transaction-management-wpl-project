@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { ChartColumnBigIcon } from "lucide-react";
+import { ChartColumnBigIcon, Wallet, HandCoins } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 function UserDropDown() {
@@ -20,14 +20,26 @@ function UserDropDown() {
       >
         <UserButton.MenuItems>
           <UserButton.Action
-            label="Dashboard"
-            labelIcon={<ChartColumnBigIcon size="16" />}
+            label="View All Transactions"
+            labelIcon={<Wallet size="16" />}
             onClick={() => {
-              router.push("/dashboard");
+              router.push("/dashboard/transactions");
+            }}
+          />
+        </UserButton.MenuItems>
+
+        <UserButton.MenuItems>
+          <UserButton.Action
+            label="Create A New Transaction"
+            labelIcon={<HandCoins size="16" />}
+            onClick={() => {
+              router.push("/dashboard/transactions/new");
             }}
           />
         </UserButton.MenuItems>
       </UserButton>
+
+      
     </div>
   );
 }

@@ -20,7 +20,7 @@ export default function Home() {
             </p>
             <div className="flex gap-4">
               <Button asChild size="lg" className="bg-lime-600 hover:bg-lime-700">
-                <Link href="/dashboard">
+                <Link href="/dashboard/transactions/new">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -104,7 +104,7 @@ export default function Home() {
             Join thousands of users who are already managing their finances better with NextCash.
           </p>
           <Button asChild size="lg" className="bg-lime-600 hover:bg-lime-700">
-            <Link href="/dashboard">
+            <Link href="/dashboard/transactions">
               Start Managing Your Finances
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
