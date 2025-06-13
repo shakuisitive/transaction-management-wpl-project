@@ -1,42 +1,79 @@
 import 'server-only';
 import { db } from '@/lib/db';
-import { categoriesTable, transactionsTable } from '@/lib/db/schema';
+import { incomeCategoriesTable, expenseCategoriesTable, incomeTransactionsTable, expenseTransactionsTable } from '@/lib/db/schema';
 import { auth } from '@clerk/nextjs/server';
-import { and, desc, eq, gte, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
 import { format } from 'date-fns';
 
+type TransactionType = 'income' | 'expense';
+
+interface Transaction {
+    id: number;
+    description: string;
+    amount: string;
+    transactionDate: Date;
+    category: string;
+    type: TransactionType;
+}
+
 export async function getTransactionsByMonth({
-    month, year
+    month,
+    year
 }: {
     month: number,
     year: number,
-}){
-    let {userId} = await auth();
+}): Promise<Transaction[] | null> {
+    let { userId } = await auth();
 
-    if(!userId) {return null};
+    if (!userId) { return null; }
 
     let earliestDate = new Date(year, month - 1, 1);
-    let latestDate  = new Date(year, month, 0)
+    let latestDate = new Date(year, month, 0);
 
-    let transactions = await db
-    .select({
-        id: transactionsTable.id,
-        description: transactionsTable.description,
-        amount: transactionsTable.amount,
-        transactionDate: transactionsTable.transactionDate,
-        category: categoriesTable.name,
-        transactionType: categoriesTable.type
-    })
-    .from(transactionsTable)
-    .where(and(
-        eq(transactionsTable.userId, userId),
-        gte(transactionsTable.transactionDate, format(earliestDate, "yyyy-MM-dd")),
-        lte(transactionsTable.transactionDate, format(latestDate, "yyyy-MM-dd"))
-        ),
-    )
-    .orderBy(desc(transactionsTable.transactionDate))
-    .leftJoin(categoriesTable, eq(transactionsTable.categoryId, categoriesTable.id))
+    // Get income transactions
+    const incomeTransactions = await db
+        .select({
+            id: incomeTransactionsTable.id,
+            description: incomeTransactionsTable.description,
+            amount: incomeTransactionsTable.amount,
+            transactionDate: incomeTransactionsTable.transactionDate,
+            category: incomeCategoriesTable.name,
+            type: sql<'income'>`'income'`
+        })
+        .from(incomeTransactionsTable)
+        .where(and(
+            eq(incomeTransactionsTable.userId, userId),
+            gte(incomeTransactionsTable.transactionDate, format(earliestDate, "yyyy-MM-dd")),
+            lte(incomeTransactionsTable.transactionDate, format(latestDate, "yyyy-MM-dd"))
+        ))
+        .leftJoin(incomeCategoriesTable, eq(incomeTransactionsTable.categoryId, incomeCategoriesTable.id));
 
-    return transactions;
+    // Get expense transactions
+    const expenseTransactions = await db
+        .select({
+            id: expenseTransactionsTable.id,
+            description: expenseTransactionsTable.description,
+            amount: expenseTransactionsTable.amount,
+            transactionDate: expenseTransactionsTable.transactionDate,
+            category: expenseCategoriesTable.name,
+            type: sql<'expense'>`'expense'`
+        })
+        .from(expenseTransactionsTable)
+        .where(and(
+            eq(expenseTransactionsTable.userId, userId),
+            gte(expenseTransactionsTable.transactionDate, format(earliestDate, "yyyy-MM-dd")),
+            lte(expenseTransactionsTable.transactionDate, format(latestDate, "yyyy-MM-dd"))
+        ))
+        .leftJoin(expenseCategoriesTable, eq(expenseTransactionsTable.categoryId, expenseCategoriesTable.id));
 
+    // Combine and sort all transactions
+    const allTransactions = [...incomeTransactions, ...expenseTransactions]
+        .map(transaction => ({
+            ...transaction,
+            transactionDate: new Date(transaction.transactionDate),
+            category: transaction.category || 'Uncategorized'
+        }))
+        .sort((a, b) => b.transactionDate.getTime() - a.transactionDate.getTime());
+
+    return allTransactions as Transaction[];
 }

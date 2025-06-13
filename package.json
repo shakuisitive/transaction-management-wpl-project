@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "node ./scripts/migrate.js"
-
   },
   "dependencies": {
     "@clerk/nextjs": "^6.20.0",
@@ -33,6 +32,7 @@
     "react-hook-form": "^7.56.4",
     "server-only": "^0.0.1",
     "sonner": "^2.0.3",
+    "svix": "^1.67.0",
     "tailwind-merge": "^3.3.0",
     "zod": "^3.25.28"
   },

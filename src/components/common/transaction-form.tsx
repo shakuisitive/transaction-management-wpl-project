@@ -39,7 +39,13 @@ export let transactionFormSchema = z.object({
     .max(300, "The description must contain a maximum of 300 characters."),
 });
 
-type Props = { categories: Category[], onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void> }
+type Props = { 
+  categories: {
+    income: Category[],
+    expense: Category[]
+  }, 
+  onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void> 
+}
 
 const TransactionForm = ({ categories, onSubmit }: Props) => {
   let form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -58,18 +64,14 @@ const TransactionForm = ({ categories, onSubmit }: Props) => {
     name: "transactionType",
   });
 
-  let filteredCategories = categories.filter(
-    (category) => category.type === transactionType
-  );
-
-  let handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
-    onSubmit(data);
-  };
+  let filteredCategories = transactionType === "income" 
+    ? categories.income 
+    : categories.expense;
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <fieldset className="grid grid-cols-2 gap-y-5 gap-x-2 ">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <fieldset className="grid grid-cols-2 gap-y-5 gap-x-2">
           <FormField
             render={({ field }) => (
               <FormItem>
@@ -104,11 +106,11 @@ const TransactionForm = ({ categories, onSubmit }: Props) => {
                 <FormLabel>Category</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => field.onChange(parseInt(value))}
                     value={field.value.toString()}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
                       {filteredCategories.map((category) => (
@@ -174,7 +176,13 @@ const TransactionForm = ({ categories, onSubmit }: Props) => {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                  <Input 
+                    {...field} 
+                    type="number" 
+                    step="0.01"
+                    min="0"
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,7 +192,7 @@ const TransactionForm = ({ categories, onSubmit }: Props) => {
           />
         </fieldset>
 
-        <fieldset className="mt-5 flex flex-col gap-5">
+        <fieldset className="flex flex-col gap-5">
           <FormField
             render={({ field }) => (
               <FormItem>
@@ -198,7 +206,7 @@ const TransactionForm = ({ categories, onSubmit }: Props) => {
             control={form.control}
             name="description"
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-full">Create Transaction</Button>
         </fieldset>
       </form>
     </Form>

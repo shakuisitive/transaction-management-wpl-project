@@ -1,9 +1,10 @@
 "use server";
 import { db } from "@/lib/db";
-import { transactionsTable } from "@/lib/db/schema";
+import { incomeTransactionsTable, expenseTransactionsTable, usersTable } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { addDays, subYears } from "date-fns";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
 
 let transactionSchema = z.object({
   amount: z.number().positive("Amount must be greater than 0"),
@@ -16,6 +17,7 @@ let transactionSchema = z.object({
     .date()
     .min(subYears(new Date(), 100))
     .max(addDays(new Date(), 1)),
+  transactionType: z.enum(["income", "expense"])
 });
 
 export let createTransaction = async (data: {
@@ -23,6 +25,7 @@ export let createTransaction = async (data: {
   transactionDate: string;
   description: string;
   categoryId: number;
+  transactionType: "income" | "expense";
 }) => {
   let { userId } = await auth();
 
@@ -43,8 +46,26 @@ export let createTransaction = async (data: {
   }
 
   try {
+    // First, ensure the user exists in our database
+    const [existingUser] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (!existingUser) {
+      // If user doesn't exist, create them
+      await db.insert(usersTable).values({
+        id: userId,
+        email: "", // We'll update this later if needed
+        firstName: "",
+        lastName: "",
+      });
+    }
+
+    const table = data.transactionType === "income" ? incomeTransactionsTable : expenseTransactionsTable;
+    
     let [transaction] = await db
-      .insert(transactionsTable)
+      .insert(table)
       .values({
         userId,
         amount: data.amount.toString(),
@@ -56,6 +77,7 @@ export let createTransaction = async (data: {
 
     return { id: transaction.id, message: "Success" };
   } catch (e: any) {
+    console.error("Transaction creation error:", e);
     return {
       error: true,
       message: e.message,
