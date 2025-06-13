@@ -1,7 +1,7 @@
 export type IncomeCategory = {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   status: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -10,7 +10,7 @@ export type IncomeCategory = {
 export type ExpenseCategory = {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   status: boolean;
   createdAt: Date;
   updatedAt: Date;
