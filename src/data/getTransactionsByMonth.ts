@@ -2,7 +2,7 @@ import 'server-only';
 import { db } from '@/lib/db';
 import { incomeCategoriesTable, expenseCategoriesTable, incomeTransactionsTable, expenseTransactionsTable } from '@/lib/db/schema';
 import { auth } from '@clerk/nextjs/server';
-import { and, desc, eq, gte, lte, or, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, lte, sql } from 'drizzle-orm';
 import { format } from 'date-fns';
 
 type TransactionType = 'income' | 'expense';
@@ -30,7 +30,7 @@ export async function getTransactionsByMonth({
     let earliestDate = new Date(year, month - 1, 1);
     let latestDate = new Date(year, month, 0);
 
-    // Get income transactions
+    // Get income transactions with category names
     const incomeTransactions = await db
         .select({
             id: incomeTransactionsTable.id,
@@ -46,9 +46,9 @@ export async function getTransactionsByMonth({
             gte(incomeTransactionsTable.transactionDate, format(earliestDate, "yyyy-MM-dd")),
             lte(incomeTransactionsTable.transactionDate, format(latestDate, "yyyy-MM-dd"))
         ))
-        .leftJoin(incomeCategoriesTable, eq(incomeTransactionsTable.categoryId, incomeCategoriesTable.id));
+        .innerJoin(incomeCategoriesTable, eq(incomeTransactionsTable.categoryId, incomeCategoriesTable.id));
 
-    // Get expense transactions
+    // Get expense transactions with category names
     const expenseTransactions = await db
         .select({
             id: expenseTransactionsTable.id,
@@ -64,14 +64,13 @@ export async function getTransactionsByMonth({
             gte(expenseTransactionsTable.transactionDate, format(earliestDate, "yyyy-MM-dd")),
             lte(expenseTransactionsTable.transactionDate, format(latestDate, "yyyy-MM-dd"))
         ))
-        .leftJoin(expenseCategoriesTable, eq(expenseTransactionsTable.categoryId, expenseCategoriesTable.id));
+        .innerJoin(expenseCategoriesTable, eq(expenseTransactionsTable.categoryId, expenseCategoriesTable.id));
 
     // Combine and sort all transactions
     const allTransactions = [...incomeTransactions, ...expenseTransactions]
         .map(transaction => ({
             ...transaction,
-            transactionDate: new Date(transaction.transactionDate),
-            category: transaction.category || 'Uncategorized'
+            transactionDate: new Date(transaction.transactionDate as string)
         }))
         .sort((a, b) => b.transactionDate.getTime() - a.transactionDate.getTime());
 

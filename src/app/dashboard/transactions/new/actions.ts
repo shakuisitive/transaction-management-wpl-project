@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import { incomeTransactionsTable, expenseTransactionsTable, usersTable } from "@/lib/db/schema";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { addDays, subYears } from "date-fns";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
@@ -28,8 +28,9 @@ export let createTransaction = async (data: {
   transactionType: "income" | "expense";
 }) => {
   let { userId } = await auth();
+  const user = await currentUser();
 
-  if (!userId) {
+  if (!userId || !user) {
     return {
       error: true,
       message: "User is not authenticated",
@@ -53,13 +54,23 @@ export let createTransaction = async (data: {
       .where(eq(usersTable.id, userId));
 
     if (!existingUser) {
-      // If user doesn't exist, create them
+      // If user doesn't exist, create them with Clerk data
       await db.insert(usersTable).values({
         id: userId,
-        email: "", // We'll update this later if needed
-        firstName: "",
-        lastName: "",
+        email: user.emailAddresses[0]?.emailAddress || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
       });
+    } else {
+      // Update existing user's information
+      await db
+        .update(usersTable)
+        .set({
+          email: user.emailAddresses[0]?.emailAddress || existingUser.email,
+          firstName: user.firstName || existingUser.firstName,
+          lastName: user.lastName || existingUser.lastName,
+        })
+        .where(eq(usersTable.id, userId));
     }
 
     const table = data.transactionType === "income" ? incomeTransactionsTable : expenseTransactionsTable;
