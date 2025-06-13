@@ -11,6 +11,8 @@ import {
 // Users table (using Clerk's user data)
 export const usersTable = pgTable("users", {
   id: text("id").primaryKey(), // Clerk user ID
+  role: text("role").default('user').notNull(), // User role (e.g., user, admin)
+  status: boolean("is_active").default(true).notNull(), // To disable categories without deleting
   email: text("email").notNull(),
   firstName: text("first_name"),
   lastName: text("last_name"),
