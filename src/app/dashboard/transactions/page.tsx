@@ -96,7 +96,7 @@ async function TransactionsPage({
 
               <TableBody>
                 {transactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
+                  <TableRow key={`${transaction.type}-${transaction.id}`}>
                     <TableCell>
                       {format(
                         new Date(transaction.transactionDate),
