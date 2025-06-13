@@ -40,7 +40,7 @@ export default function RootLayout({
               href="/"
             >
               <ChartColumnBigIcon className="text-lime-500" />
-              NextCash
+              WealthWave
             </Link>
             <div>
               <SignedOut>
@@ -68,9 +68,7 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </nav>
-          <main className="max-w-screen-xl mx-auto px-4">
-            {children}
-          </main>
+          <main className="max-w-screen-xl mx-auto px-4">{children}</main>
           <Toaster />
         </body>
       </html>

@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BarChart3, Calendar, CreditCard, PiggyBank, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  Calendar,
+  CreditCard,
+  PiggyBank,
+  TrendingUp,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -16,19 +23,27 @@ export default function Home() {
               <span className="text-lime-600">Financial Future</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Track your income and expenses, manage your budget, and make smarter financial decisions with NextCash.
+              Track your income and expenses, manage your budget, and make
+              smarter financial decisions with WealthWave.
             </p>
             <div className="flex gap-4">
-              <Button asChild size="lg" className="bg-lime-600 hover:bg-lime-700">
+              <Button
+                asChild
+                size="lg"
+                className="bg-lime-600 hover:bg-lime-700"
+              >
                 <Link href="/dashboard/transactions/new">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-lime-200 hover:bg-lime-50">
-                <Link href="/dashboard/transactions">
-                  View Transactions
-                </Link>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-lime-200 hover:bg-lime-50"
+              >
+                <Link href="/dashboard/transactions">View Transactions</Link>
               </Button>
             </div>
           </div>
@@ -48,7 +63,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Track Transactions</h3>
               <p className="text-muted-foreground">
-                Easily record and categorize your income and expenses with our intuitive interface.
+                Easily record and categorize your income and expenses with our
+                intuitive interface.
               </p>
             </div>
 
@@ -58,7 +74,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Monthly Overview</h3>
               <p className="text-muted-foreground">
-                Get a clear view of your monthly spending patterns and financial health.
+                Get a clear view of your monthly spending patterns and financial
+                health.
               </p>
             </div>
 
@@ -68,7 +85,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Smart Analytics</h3>
               <p className="text-muted-foreground">
-                Visualize your spending habits and track your financial progress over time.
+                Visualize your spending habits and track your financial progress
+                over time.
               </p>
             </div>
 
@@ -78,7 +96,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Budget Management</h3>
               <p className="text-muted-foreground">
-                Set and track your budget goals to achieve your financial objectives.
+                Set and track your budget goals to achieve your financial
+                objectives.
               </p>
             </div>
 
@@ -88,7 +107,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Financial Growth</h3>
               <p className="text-muted-foreground">
-                Make informed decisions to grow your wealth and improve your financial standing.
+                Make informed decisions to grow your wealth and improve your
+                financial standing.
               </p>
             </div>
           </div>
@@ -101,7 +121,8 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 text-center relative">
           <h2 className="text-3xl font-bold mb-4">Ready to Take Control?</h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of users who are already managing their finances better with NextCash.
+            Join thousands of users who are already managing their finances
+            better with WealthWave.
           </p>
           <Button asChild size="lg" className="bg-lime-600 hover:bg-lime-700">
             <Link href="/dashboard/transactions">
