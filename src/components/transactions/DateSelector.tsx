@@ -47,15 +47,11 @@ export function DateSelector({ currentYear, currentMonth }: DateSelectorProps) {
 
   const handleYearChange = async (year: string) => {
     setIsLoading(true);
-    // Add artificial delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
     router.push(`/dashboard/transactions?year=${year}&month=${currentMonth}`);
   };
 
   const handleMonthChange = async (month: string) => {
     setIsLoading(true);
-    // Add artificial delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
     const monthIndex = months.indexOf(month) + 1;
     router.push(`/dashboard/transactions?year=${currentYear}&month=${monthIndex}`);
   };
