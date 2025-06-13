@@ -1,15 +1,36 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { ChartColumnBigIcon, Wallet, HandCoins } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getUserFromDatabase } from "@/actions/user";
 
 function UserDropDown() {
   let router = useRouter();
+  const { user: clerkUser } = useUser();
+  const [dbUser, setDbUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (clerkUser?.id) {
+        const user = await getUserFromDatabase(clerkUser.id);
+        setDbUser(user);
+      }
+    };
+    fetchUser();
+  }, [clerkUser]);
+
+  const displayName = dbUser?.firstName || clerkUser?.firstName || "";
+  const displayLastName = dbUser?.lastName || clerkUser?.lastName || "";
+
+  const fullName = `${displayName} ${displayLastName}`.trim();
+
   return (
-    <div>
+    <div className="flex items-center gap-2">
+      {fullName && <span className="text-white text-sm font-medium">{fullName}</span>}
       <UserButton
-        showName
+        showName={false}
         appearance={{
           elements: {
             userButtonOuterIdentifier: {
@@ -38,8 +59,6 @@ function UserDropDown() {
           />
         </UserButton.MenuItems>
       </UserButton>
-
-      
     </div>
   );
 }
