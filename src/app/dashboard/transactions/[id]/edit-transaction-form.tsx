@@ -71,6 +71,7 @@ export default function EditTransactionForm({
         transactionDate: new Date(transaction.transactionDate),
         transactionType: transaction.type,
       }}
+      submitButtonLabel="Update Transaction"
     />
   );
 } 

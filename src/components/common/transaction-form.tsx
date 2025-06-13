@@ -45,10 +45,11 @@ type Props = {
     expense: Category[]
   }, 
   onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>,
-  defaultValues?: Partial<z.infer<typeof transactionFormSchema>>
+  defaultValues?: Partial<z.infer<typeof transactionFormSchema>>,
+  submitButtonLabel?: string
 }
 
-const TransactionForm = ({ categories, onSubmit, defaultValues }: Props) => {
+const TransactionForm = ({ categories, onSubmit, defaultValues, submitButtonLabel }: Props) => {
   let form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: defaultValues || {
@@ -207,7 +208,7 @@ const TransactionForm = ({ categories, onSubmit, defaultValues }: Props) => {
             control={form.control}
             name="description"
           />
-          <Button type="submit" className="w-full">Create Transaction</Button>
+          <Button type="submit" className="w-full">{submitButtonLabel || "Create Transaction"}</Button>
         </fieldset>
       </form>
     </Form>
