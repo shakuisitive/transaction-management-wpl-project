@@ -68,7 +68,9 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </nav>
-          {children}
+          <main className="max-w-screen-xl mx-auto px-4">
+            {children}
+          </main>
           <Toaster />
         </body>
       </html>
