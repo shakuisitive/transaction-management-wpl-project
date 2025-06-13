@@ -1,59 +1,95 @@
 import { drizzle } from "drizzle-orm/neon-http";
-import { categoriesTable, transactionsTable } from "./lib/db/schema";
+import { incomeCategoriesTable, expenseCategoriesTable } from "./lib/db/schema";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 export const db = drizzle(process.env.DATABASE_URL!);
 
-let categoriesSeedData: (typeof categoriesTable.$inferInsert)[] = [
+// Fixed set of income categories with additional metadata
+const incomeCategories = [
   {
     name: "Salary",
-    type: "income",
+    description: "Regular employment income",
+    status: true
   },
   {
     name: "Rental Income",
-    type: "income",
+    description: "Income from property rentals",
+    status: true
   },
   {
     name: "Business Income",
-    type: "income",
+    description: "Income from business activities",
+    status: true
   },
   {
     name: "Investments",
-    type: "income",
+    description: "Income from investments and dividends",
+    status: true
   },
   {
-    name: "Other",
-    type: "income",
-  },
+    name: "Other Income",
+    description: "Miscellaneous income sources",
+    status: true
+  }
+];
+
+// Fixed set of expense categories with additional metadata
+const expenseCategories = [
   {
     name: "Housing",
-    type: "expense",
+    description: "Rent, mortgage, and housing-related expenses",
+    status: true
   },
   {
     name: "Transport",
-    type: "expense",
+    description: "Transportation and vehicle expenses",
+    status: true
   },
   {
     name: "Food & Groceries",
-    type: "expense",
+    description: "Food, groceries, and dining expenses",
+    status: true
   },
   {
     name: "Health",
-    type: "expense",
+    description: "Healthcare and medical expenses",
+    status: true
   },
   {
     name: "Entertainment & Leisure",
-    type: "expense",
+    description: "Entertainment and recreational expenses",
+    status: true
   },
   {
-    name: "Other",
-    type: "expense",
-  },
+    name: "Other Expenses",
+    description: "Miscellaneous expenses",
+    status: true
+  }
 ];
 
-async function main() {
-  await db.insert(categoriesTable).values(categoriesSeedData);
+// Seed categories
+async function seedCategories() {
+  try {
+    // Insert income categories
+    await db.insert(incomeCategoriesTable).values(incomeCategories);
+    console.log("Income categories seeded successfully!");
+
+    // Insert expense categories
+    await db.insert(expenseCategoriesTable).values(expenseCategories);
+    console.log("Expense categories seeded successfully!");
+  } catch (error: any) {
+    // If categories already exist, that's fine
+    if (error.code === '23505') { // Unique violation
+      console.log("Categories already exist, skipping seed.");
+    } else {
+      throw error;
+    }
+  }
 }
 
-main();
+// Run the seed
+seedCategories().catch((error) => {
+  console.error("Error seeding database:", error);
+  process.exit(1);
+});
