@@ -37,8 +37,11 @@ export default function DeleteTransactionButton({
         return;
       }
 
-      toast.success("Transaction deleted successfully");
-      router.push("/dashboard/transactions");
+      toast.success("Transaction deleted successfully", {
+        description: "Your transaction has been deleted.",
+      });
+      const today = new Date();
+      router.push(`/dashboard/transactions?month=${today.getMonth() + 1}&year=${today.getFullYear()}`);
     } catch (error) {
       toast.error("An error occurred", {
         description: "Failed to delete transaction. Please try again.",

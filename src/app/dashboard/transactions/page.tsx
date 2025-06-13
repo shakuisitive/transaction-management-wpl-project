@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 import numeral from "numeral";
+import { DateSelector } from "@/components/transactions/DateSelector";
 
 import { z } from "zod";
 let today = new Date();
@@ -32,7 +33,7 @@ let searchSchema = z.object({
     .min(today.getFullYear() - 100)
     .max(today.getFullYear() + 1)
     .catch(today.getFullYear()),
-  month: z.coerce.number().min(1).max(12).catch(1),
+  month: z.coerce.number().min(1).max(12).catch(today.getMonth() + 1),
 });
 
 async function TransactionsPage({
@@ -63,9 +64,9 @@ async function TransactionsPage({
 
       <Card className="mt-4">
         <CardHeader>
-          <CardTitle className="flex justify-between">
+          <CardTitle className="flex justify-between items-center">
             <span>{format(selectedDate, "MMMM yyyy")}</span>
-            <div>dropdowns</div>
+            <DateSelector currentYear={year} currentMonth={month} />
           </CardTitle>
         </CardHeader>
 
